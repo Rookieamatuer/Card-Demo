@@ -25,6 +25,8 @@ public class FightUI : UIBase
         hpImg = transform.Find("hp/fill").GetComponent<Image>();
         fyTxt = transform.Find("hp/shield/Text").GetComponent<Text>();
         cardItemList = new List<CardItem>();
+        // Turn end button
+        transform.Find("turnBtn").GetComponent<Button>().onClick.AddListener(onChangeTurnBtn);
     }
 
     private void Start()
@@ -79,9 +81,11 @@ public class FightUI : UIBase
         {
             GameObject obj = Instantiate(Resources.Load("UI/CardItem"), transform) as GameObject;
             obj.GetComponent<RectTransform>().anchoredPosition = new Vector2(-1000, -700);
-            var item = obj.AddComponent<CardItem>();
+            // var item = obj.AddComponent<CardItem>();
             string cardId = FightCardManager.Instance.DrawCard();
             Dictionary<string, string> data = GameConfigManager.Instance.GetCardById(cardId);
+            CardItem item = obj.AddComponent(System.Type.GetType(data["Script"])) as CardItem;
+            // CardItem item = obj.AddComponent(System.Type.GetType("DefendCard")) as CardItem;
             item.Init(data);
             cardItemList.Add(item);
         }
@@ -97,6 +101,40 @@ public class FightUI : UIBase
         {
             cardItemList[i].GetComponent<RectTransform>().DOAnchorPos(startPos, 0.5f);
             startPos.x = startPos.x + offset;
+        }
+    }
+
+    // Remove card
+    public void RemoveCard(CardItem item)
+    {
+        AudioManager.Instance.PlayEffect("Cards/cardShove");    // Remove audio
+        item.enabled = false;
+        FightCardManager.Instance.usedCardList.Add(item.data["Id"]);
+        // Refresh card number
+        noCardCountTxt.text = FightCardManager.Instance.usedCardList.Count.ToString();
+        // Remove from list
+        cardItemList.Remove(item);
+        // Refresh card position
+        UpdateCardItemPos();
+        // Discard card
+        item.GetComponent<RectTransform>().DOAnchorPos(new Vector2(1000, -700), 0.25f);
+        item.transform.DOScale(0, 0.25f);
+        Destroy(item.gameObject, 1);
+    }
+
+    //玩家回合结束，切换到敌人回合
+    private void onChangeTurnBtn()
+    {
+        //只有玩家回合才能切换
+        if (FightManager.Instance.fightUnit is Fight_PlayerTurn) FightManager.Instance.ChangeType(FightType.EnemyTurn);
+    }
+
+    //删除所有卡牌
+    public void RemoveAllCards()
+    {
+        for (int i = cardItemList.Count - 1; i > 0; i--)
+        {
+            RemoveCard(cardItemList[i]);
         }
     }
 

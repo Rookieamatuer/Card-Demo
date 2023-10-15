@@ -71,4 +71,31 @@ public class FightManager : MonoBehaviour
         }
     }
 
+    //玩家受击
+    public void GetPlayerHit(int hit)
+    {
+        //扣护盾
+        if (DefenseCount > hit)
+        {
+            DefenseCount -= hit;
+            Debug.Log("Hit");
+        }
+        else
+        {
+            hit = hit - DefenseCount;
+            DefenseCount = 0;
+            CurHp -= hit;
+            if (CurHp <= 0)
+            {
+                CurHp = 0;
+                //切换到游戏失败状态
+                ChangeType(FightType.Lose);
+            }
+
+        }
+        // 更新界面
+        UIManager.Instance.GetUI<FightUI>("FightUI").UpdateHp();
+        UIManager.Instance.GetUI<FightUI>("FightUI").UpdateDefense();
+    }
+
 }

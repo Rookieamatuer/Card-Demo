@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class CardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Dictionary<string, string> data; // Card data
-    Vector2 initPos;//拖拽开始时记录卡牌的位置
+    Vector2 initPos;    // Initial card position
 
     public void Init(Dictionary<string, string> data)
     {
@@ -24,15 +24,15 @@ public class CardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         transform.Find("bg/Text").GetComponent<Text>().text = GameConfigManager.Instance.GetCardTypeById(data["Type"])["Name"];
     }
 
-    //开始拖拽
+    // Start drag
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
         initPos = transform.GetComponent<RectTransform>().anchoredPosition;
-        //播放声音
+        // Audio active
         AudioManager.Instance.PlayEffect("Cards/draw");
     }
 
-    //拖拽中
+    // On drag
     public virtual void OnDrag(PointerEventData eventData)
     {
         Vector2 pos;
@@ -47,11 +47,43 @@ public class CardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         }
     }
 
-    //结束拖拽
+    // End drag
     public virtual void OnEndDrag(PointerEventData eventData)
     {
         transform.GetComponent<RectTransform>().anchoredPosition = initPos;
         // transform.SetSiblingIndex(index);
+    }
+
+    // Try use card
+    public virtual bool TryUse()
+    {
+        // Cost need
+        int cost = int.Parse(data["Expend"]);
+        if (cost > FightManager.Instance.CurPowerCount)
+        {
+            // Cost lack
+            AudioManager.Instance.PlayEffect("Effect/lose");
+            UIManager.Instance.ShowTip("费用不足", Color.red);
+            return false;
+        }
+        else
+        {
+            // Cut cost
+            FightManager.Instance.CurPowerCount -= cost;
+            // Refresh text
+            UIManager.Instance.GetUI<FightUI>("FightUI").UpdatePower();
+            // Remove card
+            UIManager.Instance.GetUI<FightUI>("FightUI").RemoveCard(this);
+            return true;
+        }
+    }
+
+    // Create effect
+    public void PlayEffect(Vector3 pos)
+    {
+        GameObject effectobj = Instantiate(Resources.Load(data["Effects"])) as GameObject;
+        effectobj.transform.position = pos;
+        Destroy(effectobj, 2);
     }
 
 }

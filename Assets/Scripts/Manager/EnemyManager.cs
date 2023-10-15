@@ -9,6 +9,7 @@ public class EnemyManeger
     public static EnemyManeger Instance = new EnemyManeger();
 
     private List<Enemy> enemyList;  // Enemy list
+
     // Load enemy resource, id refer to level
     public void LoadRes(string id)
     {
@@ -43,4 +44,29 @@ public class EnemyManeger
             obj.transform.position = new Vector3(x, y, z);
         }
     }
+
+    public void DeleteEnemy(Enemy enemy)
+    {
+        enemyList.Remove(enemy);
+
+        //TODO:后续还要做击杀所有怪物的判断
+    }
+
+    //执行活着的怪物的行为
+    public IEnumerator DoAllEnemyAction()
+    {
+        for (int i = 0; i < enemyList.Count; i++)
+        {
+            yield return FightManager.Instance.StartCoroutine(enemyList[i].DoAction());
+        }
+        // 行动完后更新所有敌人行为
+        for (int i = 0; i < enemyList.Count; i++)
+        {
+            enemyList[i].SetRandomAction();
+
+        }
+        // 切换到玩家回合
+        FightManager.Instance.ChangeType(FightType.PlayerTurn);
+    }
+
 }

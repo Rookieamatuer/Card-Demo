@@ -8,6 +8,6 @@ Inluding basic start interface and setting page in game
 
 Start menu implemented the slider to control the volume of bgm, which is attached to the slider in the  in game setting page, and the level choice is also available. Also, in the intro section, implemented the scroll view, which is easy to contain more content.
 
-The in game setting page is implemented to offer the function of music and effect sounds adjust, and the game will be paused when the setting page is open.
+The in game setting page is implemented to offer the function of music and effect sounds adjust, the music can be muted by clicking the text button and released by click the button again, and the game will be paused when the setting page is open and return to normal after click the continue button.
 
 While in the battle, the interface of battle is also been implemented. Player can check the cards in the deck and the number they used in real time, and the pointer for enemy chosen is refer to << slay the spire >>. The animation of cards is implemented by using Dotween package.

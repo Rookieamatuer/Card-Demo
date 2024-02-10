@@ -80,7 +80,7 @@ public class FightUI : UIBase
         for (int i = 0; i < count; i++)
         {
             GameObject obj = Instantiate(Resources.Load("UI/CardItem"), transform) as GameObject;
-            obj.GetComponent<RectTransform>().anchoredPosition = new Vector2(-1000, -700);
+            obj.GetComponent<RectTransform>().anchoredPosition = new Vector2(-500, -120);
             // var item = obj.AddComponent<CardItem>();
             string cardId = FightCardManager.Instance.DrawCard();
             Dictionary<string, string> data = GameConfigManager.Instance.GetCardById(cardId);
@@ -95,11 +95,11 @@ public class FightUI : UIBase
     public void UpdateCardItemPos()
     {
 
-        float offset = 800f / cardItemList.Count;
-        Vector2 startPos = new Vector2(-cardItemList.Count / 2f * offset + offset * 0.5f, -500);
+        float offset = 300f / cardItemList.Count;
+        Vector2 startPos = new Vector2(-cardItemList.Count / 2f * offset + offset * 0.5f, -150);
         for (int i = 0; i < cardItemList.Count; i++)
         {
-            cardItemList[i].GetComponent<RectTransform>().DOAnchorPos(startPos, 0.5f);
+            cardItemList[i].GetComponent<RectTransform>().DOAnchorPos(startPos, 0.01f);
             startPos.x = startPos.x + offset;
         }
     }
@@ -132,10 +132,33 @@ public class FightUI : UIBase
     //É¾³ýËùÓÐ¿¨ÅÆ
     public void RemoveAllCards()
     {
-        for (int i = cardItemList.Count - 1; i > 0; i--)
+        for (int i = cardItemList.Count - 1; i >= 0; i--)
         {
             RemoveCard(cardItemList[i]);
         }
     }
 
+    public void InvisibleAllCards()
+    {
+        for (int i = 0; i < cardItemList.Count; i++)
+        {
+            cardItemList[i].gameObject.SetActive(false);
+        }
+    }
+
+    public void VisibleAllCards()
+    {
+        for (int i = 0; i < cardItemList.Count; i++)
+        {
+            cardItemList[i].gameObject.SetActive(true);
+        }
+    }
+
+    public void ResetCardList()
+    {
+        foreach (CardItem item in cardItemList)
+        {
+            Destroy(item.gameObject, 1);
+        }
+    }
 }

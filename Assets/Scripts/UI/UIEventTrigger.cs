@@ -15,6 +15,7 @@ public class UIEventTrigger : MonoBehaviour, IPointerClickHandler
         if(trigger == null)
         {
             trigger = go.AddComponent<UIEventTrigger>();
+            // Debug.Log("test");
         }
         return trigger;
     }
@@ -23,6 +24,7 @@ public class UIEventTrigger : MonoBehaviour, IPointerClickHandler
         if(onClick != null)
         {
             onClick(gameObject, eventData);
+            // Debug.Log("click");
         }
     }
 

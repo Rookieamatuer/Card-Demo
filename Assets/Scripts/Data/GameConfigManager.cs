@@ -16,6 +16,8 @@ public class GameConfigManager
 
     private TextAsset textAsset;
 
+    
+
     public void Init()
     {
         textAsset = Resources.Load<TextAsset>("Data/card");

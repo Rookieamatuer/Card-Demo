@@ -8,7 +8,8 @@ public class LoginUI : UIBase
     private void Awake()
     {
         // Game start
-        Register("bg/startBtn").onClick = onStartGameBtn;
+        Register("Background/MainMenu/StartButton").onClick = onStartGameBtn;
+
     }
 
     private void onStartGameBtn(GameObject go, PointerEventData pointerEventData)

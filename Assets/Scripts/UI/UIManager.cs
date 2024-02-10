@@ -14,13 +14,23 @@ public class UIManager : MonoBehaviour
 
     private List<UIBase> uiList; // List of loaded interface
 
+    private List<GameObject> actionIcons;
+
     private void Awake()
     {
-        Instance = this;
-        // Get Canvas
-        canvasTransform = GameObject.Find("Canvas").transform;
-        // Initialize list
-        uiList = new List<UIBase>();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            // Get Canvas
+            canvasTransform = GameObject.Find("Canvas").transform;
+            // Initialize list
+            uiList = new List<UIBase>();
+        } else
+        {
+            Destroy(gameObject);
+        }
+        
     }
     // Start is called before the first frame update
     void Start()
@@ -102,6 +112,7 @@ public class UIManager : MonoBehaviour
     {
         GameObject obj = Instantiate(Resources.Load("UI/actionIcon"), canvasTransform) as GameObject;
         obj.transform.SetAsFirstSibling();  // Set in parent top
+        //actionIcons.Add(obj);
         return obj;
     }
 
@@ -142,6 +153,14 @@ public class UIManager : MonoBehaviour
             return ui.GetComponent<T>();
         }
         return null;
+    }
+
+    public void DeleteAllActionIcons()
+    {
+        foreach(GameObject g in actionIcons)
+        {
+            Destroy(g);
+        }
     }
 
 }

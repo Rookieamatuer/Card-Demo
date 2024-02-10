@@ -8,7 +8,8 @@ public class EnemyManeger
 {
     public static EnemyManeger Instance = new EnemyManeger();
 
-    private List<Enemy> enemyList;  // Enemy list
+    public List<Enemy> enemyList;  // Enemy list
+
 
     // Load enemy resource, id refer to level
     public void LoadRes(string id)
@@ -50,6 +51,11 @@ public class EnemyManeger
         enemyList.Remove(enemy);
 
         //TODO:后续还要做击杀所有怪物的判断
+
+        if (enemyList.Count == 0 )
+        {
+            FightManager.Instance.ChangeType(FightType.Win);
+        }
     }
 
     //执行活着的怪物的行为

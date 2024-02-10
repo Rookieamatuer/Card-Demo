@@ -7,6 +7,8 @@ public class Fight_Win : FightUnit
     public override void Init()
     {
         base.Init();
+        Debug.Log("you win!");
+        FightManager.Instance.StopAllCoroutines();
     }
 
     public override void OnUpdate()

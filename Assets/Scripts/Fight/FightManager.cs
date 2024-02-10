@@ -26,17 +26,33 @@ public class FightManager : MonoBehaviour
 
     public void Init()
     {
-        MaxHp = 10;
-        CurHp = 10;
-        MaxPowerCount = 10;
-        CurPowerCount = 10;
+        if (StartMenuUI.isEasy)
+        {
+            MaxHp = 20;
+            CurHp = 20;
+            MaxPowerCount = 15;
+            CurPowerCount = 15;
+        } else
+        {
+            MaxHp = 10;
+            CurHp = 10;
+            MaxPowerCount = 10;
+            CurPowerCount = 10;
+        }
         DefenseCount = 10;
     }
 
     private void Awake()
     {
-
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        } else
+        {
+            Destroy(gameObject);
+        }
+        
     }
     //switch play state
     public void ChangeType(FightType type)
@@ -49,9 +65,11 @@ public class FightManager : MonoBehaviour
                 fightUnit = new FightInit();
                 break;
             case FightType.PlayerTurn:
+                UIManager.Instance.ShowUI<FightUI>("FightUI");
                 fightUnit = new Fight_PlayerTurn();
                 break;
             case FightType.EnemyTurn:
+                // UIManager.Instance.HideUI("FightUI");
                 fightUnit = new Fight_EnemyTurn();
                 break;
             case FightType.Win:
